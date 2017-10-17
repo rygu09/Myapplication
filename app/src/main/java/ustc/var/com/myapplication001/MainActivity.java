@@ -1,11 +1,10 @@
 package ustc.var.com.myapplication001;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.View;
-import android.widget.Button;
 
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.OkHttpClient;
@@ -18,47 +17,57 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final String Tag = "MainActivity";
     public static final String URL="http://api.laifudao.com/open/tupian.json";
 
-    private Button bt1;
     private RecyclerView mRecyclerView;
     private LinearLayoutManager mLayoutManager;
     private ImageAdapter mAdapter;
     private List<ImageBean> mData;
 
+    private Handler mHandler;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mRecyclerView = (RecyclerView) findViewById(R.id.recycle_view);
-        mLayoutManager=new LinearLayoutManager(getApplicationContext());
+        setOkHttp();
+        mHandler=new Handler(getMainLooper());
+//        Log.d(Tag,"主线程"+Thread.currentThread().getId());
+    }
 
-        bt1= (Button) findViewById(R.id.bt1);
-        bt1.setOnClickListener(new View.OnClickListener() {
+
+    private void setOkHttp() {
+        OkHttpClient mOkHttpClient=new OkHttpClient();
+        final Request request=new Request.Builder().url(URL).build();
+        mOkHttpClient.newCall(request).enqueue(new Callback() {
             @Override
-            public void onClick(View v) {
-                OkHttpClient mOkHttpClient=new OkHttpClient();
-                final Request request=new Request.Builder().url(URL).build();
-                mOkHttpClient.newCall(request).enqueue(new Callback() {
+            public void onFailure(Request request, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Response response) throws IOException {
+                String str=response.body().string();
+                mData = ImageJsonUtils.readJsonImageBeans(str);
+                mHandler.post(new Runnable() {
                     @Override
-                    public void onFailure(Request request, IOException e) {
-
-                    }
-
-                    @Override
-                    public void onResponse(Response response) throws IOException {
-                        String str=response.body().string();
-                        mData = ImageJsonUtils.readJsonImageBeans(str);
-
+                    public void run() {
+                        setRecyclerView();
                     }
                 });
-                mAdapter=new ImageAdapter(mData);
-                mRecyclerView.setLayoutManager(mLayoutManager);
-                mRecyclerView.setAdapter(mAdapter);
+
+//                Log.d(Tag,"当前线程"+Thread.currentThread().getId());
 
             }
         });
-
     }
 
+    private void setRecyclerView() {
+        mRecyclerView = (RecyclerView) findViewById(R.id.recycle_view);
+        mLayoutManager=new LinearLayoutManager(getApplicationContext());
+        mAdapter=new ImageAdapter(mData,MainActivity.this);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.setAdapter(mAdapter);
+    }
 }

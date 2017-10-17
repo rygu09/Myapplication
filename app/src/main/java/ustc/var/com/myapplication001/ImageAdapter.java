@@ -20,8 +20,9 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ItemViewHold
     List<ImageBean> mData;
     private Context mContext;
 
-    public ImageAdapter(List<ImageBean> data) {
-        mData = data;
+    public ImageAdapter(List<ImageBean> data, Context context) {
+        this.mData = data;
+        this.mContext = context;
     }
 
     //    public void setmDate(List<ImageBean> data) {
@@ -40,6 +41,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ItemViewHold
     public void onBindViewHolder(ItemViewHolder holder, int position) {
         ImageBean imageBean = mData.get(position);
         holder.mTitle.setText(imageBean.getTitle());
+
     }
 
     @Override
