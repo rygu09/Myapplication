@@ -6,11 +6,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
 import java.util.List;
+
+import ustc.var.com.myapplication001.util.ToolUtils;
 
 /**
  *
@@ -21,10 +24,12 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ItemViewHold
 
     List<ImageBean> mData;
     private Context mContext;
+    private int mMaxWidth;
 
     public ImageAdapter(List<ImageBean> data, Context context) {
         this.mData = data;
         this.mContext = context;
+        mMaxWidth = ToolUtils.getWidthInPx(mContext) /2 -10;
     }
 
     //    public void setmDate(List<ImageBean> data) {
@@ -43,6 +48,9 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ItemViewHold
     public void onBindViewHolder(ItemViewHolder holder, int position) {
         ImageBean imageBean = mData.get(position);
         holder.mTitle.setText(imageBean.getTitle());
+        float scale=imageBean.getWidth()/mMaxWidth;
+        int height= (int) (imageBean.getHeight()/scale);
+        holder.mImage.setLayoutParams(new LinearLayout.LayoutParams(mMaxWidth, height));
         Glide.with(mContext).load(imageBean.getThumburl()).into(holder.mImage);
     }
 

@@ -3,8 +3,8 @@ package ustc.var.com.myapplication001;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.OkHttpClient;
@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String URL="http://api.laifudao.com/open/tupian.json";
 
     private RecyclerView mRecyclerView;
-    private LinearLayoutManager mLayoutManager;
+    private StaggeredGridLayoutManager mStaggeredGridLayoutManager;
     private ImageAdapter mAdapter;
     private List<ImageBean> mData;
 
@@ -65,9 +65,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void setRecyclerView() {
         mRecyclerView = (RecyclerView) findViewById(R.id.recycle_view);
-        mLayoutManager=new LinearLayoutManager(getApplicationContext());
+        mStaggeredGridLayoutManager=new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL);
         mAdapter=new ImageAdapter(mData,MainActivity.this);
-        mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.setLayoutManager(mStaggeredGridLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
     }
 }
