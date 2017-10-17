@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+
 import java.util.List;
 
 /**
@@ -41,7 +43,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ItemViewHold
     public void onBindViewHolder(ItemViewHolder holder, int position) {
         ImageBean imageBean = mData.get(position);
         holder.mTitle.setText(imageBean.getTitle());
-
+        Glide.with(mContext).load(imageBean.getThumburl()).into(holder.mImage);
     }
 
     @Override
