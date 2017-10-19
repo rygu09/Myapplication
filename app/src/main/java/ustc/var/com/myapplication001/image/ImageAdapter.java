@@ -14,6 +14,7 @@ import com.bumptech.glide.Glide;
 import java.util.List;
 
 import ustc.var.com.myapplication001.R;
+import ustc.var.com.myapplication001.bean.ImageBean;
 import ustc.var.com.myapplication001.util.ToolUtils;
 
 /**

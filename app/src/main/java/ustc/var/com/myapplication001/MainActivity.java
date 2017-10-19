@@ -3,8 +3,9 @@ package ustc.var.com.myapplication001;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.*;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 
@@ -12,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ustc.var.com.myapplication001.image.ImageFragment;
+import ustc.var.com.myapplication001.news.NewsFragment;
 
 /**
  *

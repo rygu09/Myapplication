@@ -8,6 +8,8 @@ import com.google.gson.JsonParser;
 import java.util.ArrayList;
 import java.util.List;
 
+import ustc.var.com.myapplication001.bean.ImageBean;
+
 /**
  *
  * Created by GRY on 2017/10/17.
