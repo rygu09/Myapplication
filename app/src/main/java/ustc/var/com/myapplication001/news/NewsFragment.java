@@ -79,7 +79,7 @@ public class NewsFragment extends Fragment  {
     private void setRecyclerView() {
         mRecyclerView = getActivity().findViewById(R.id.recycle_view_news);
         mAdapter=new NewsAdapter(mData,getContext());
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false));
         mRecyclerView.setAdapter(mAdapter);
     }
 
@@ -87,9 +87,7 @@ public class NewsFragment extends Fragment  {
 
     private String getUrl(int pageIndex) {
         StringBuffer sb = new StringBuffer();
-
-                sb.append(Urls.TOP_URL).append(Urls.TOP_ID);
-
+        sb.append(Urls.TOP_URL).append(Urls.TOP_ID);
         sb.append("/").append(pageIndex).append(Urls.END_URL);
         return sb.toString();
     }

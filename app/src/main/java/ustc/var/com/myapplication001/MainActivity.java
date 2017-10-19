@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
         MyPagerAdapter myPagerAdapter = new MyPagerAdapter(getSupportFragmentManager(),fragments);
         myPagerAdapter.addFragment(new NewsFragment(),getString(R.string.news));
         myPagerAdapter.addFragment(new ImageFragment(),getString(R.string.image));
+//        myPagerAdapter.addFragment(new BlankFragment(),getString(R.string.image));
         myPagerAdapter.addFragment(new WeatherFragment(),getString(R.string.weather));
         viewPager.setAdapter(myPagerAdapter);
     }
