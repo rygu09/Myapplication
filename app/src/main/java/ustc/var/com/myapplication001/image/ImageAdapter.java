@@ -1,4 +1,4 @@
-package ustc.var.com.myapplication001;
+package ustc.var.com.myapplication001.image;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -13,6 +13,7 @@ import com.bumptech.glide.Glide;
 
 import java.util.List;
 
+import ustc.var.com.myapplication001.R;
 import ustc.var.com.myapplication001.util.ToolUtils;
 
 /**

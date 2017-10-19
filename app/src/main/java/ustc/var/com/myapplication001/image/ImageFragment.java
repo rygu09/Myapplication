@@ -1,4 +1,4 @@
-package ustc.var.com.myapplication001;
+package ustc.var.com.myapplication001.image;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,6 +18,8 @@ import com.squareup.okhttp.Response;
 
 import java.io.IOException;
 import java.util.List;
+
+import ustc.var.com.myapplication001.R;
 
 
 public class ImageFragment extends Fragment {
@@ -61,12 +63,6 @@ public class ImageFragment extends Fragment {
                         setRecyclerView();
                     }
                 });
-//                mHandler.post(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        setRecyclerView();
-//                    }
-//                };
             }
         });
 

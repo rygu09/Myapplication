@@ -1,4 +1,4 @@
-package ustc.var.com.myapplication001;
+package ustc.var.com.myapplication001.image;
 
 import java.io.Serializable;
 

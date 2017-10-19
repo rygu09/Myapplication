@@ -1,4 +1,4 @@
-package ustc.var.com.myapplication001;
+package ustc.var.com.myapplication001.image;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
