@@ -54,6 +54,14 @@ class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ItemViewHolder>{
         return mData.size();
     }
 
+    public NewsBean getItem(int position) {
+        return mData == null ? null : mData.get(position);
+    }
+
+    public interface OnItemClickListener {
+        public void onItemClick(View view, int position);
+    }
+
     class ItemViewHolder extends RecyclerView.ViewHolder {
         TextView mTitle;
         TextView mDesc;
