@@ -16,17 +16,18 @@ import ustc.var.com.myapplication001.R;
 import ustc.var.com.myapplication001.bean.NewsBean;
 
 /**
+ *
  * Created by GRY on 2017/10/19.
  */
 
-public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ItemViewHolder>{
-    List<NewsBean> mData;
+class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ItemViewHolder>{
+    private List<NewsBean> mData;
     private Context mContext;
 
 //    private OnItemClickListener mOnItemClickListener;
 
 
-    public NewsAdapter(List<NewsBean> data, Context context) {
+    NewsAdapter(List<NewsBean> data, Context context) {
         mData = data;
         mContext = context;
     }
@@ -34,8 +35,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ItemViewHolder
     @Override
     public NewsAdapter.ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view= LayoutInflater.from(parent.getContext()).inflate(R.layout.item_news,parent,false);
-        ItemViewHolder itemViewHolder=new ItemViewHolder(view);
-        return itemViewHolder;
+        return new ItemViewHolder(view);
     }
 
     @Override
@@ -48,19 +48,22 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ItemViewHolder
 
     @Override
     public int getItemCount() {
-        return 0;
+        if(mData == null) {
+            return 0;
+        }
+        return mData.size();
     }
 
-    public class ItemViewHolder extends RecyclerView.ViewHolder {
-        public TextView mTitle;
-        public TextView mDesc;
-        public ImageView mNewsImg;
+    class ItemViewHolder extends RecyclerView.ViewHolder {
+        TextView mTitle;
+        TextView mDesc;
+        ImageView mNewsImg;
 
-        public ItemViewHolder(View itemView) {
+        ItemViewHolder(View itemView) {
             super(itemView);
-            mTitle = (TextView) itemView.findViewById(R.id.tvTitle);
-            mDesc = (TextView) itemView.findViewById(R.id.tvDesc);
-            mNewsImg = (ImageView) itemView.findViewById(R.id.ivNews);
+            mTitle = itemView.findViewById(R.id.tvTitle);
+            mDesc = itemView.findViewById(R.id.tvDesc);
+            mNewsImg =  itemView.findViewById(R.id.ivNews);
 //            itemView.setOnClickListener(this);
         }
 
