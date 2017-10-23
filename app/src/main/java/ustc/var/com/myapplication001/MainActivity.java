@@ -15,6 +15,8 @@ import java.util.List;
 import ustc.var.com.myapplication001.image.ImageFragment;
 import ustc.var.com.myapplication001.news.NewsFragment;
 
+import static ustc.var.com.myapplication001.news.NewsFragment.NEWS_TYPE_TOP;
+
 /**
  *
  * Created by GRY on 2017/10/18.
@@ -44,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
     private void setupViewPager(ViewPager viewPager) {
         List<Fragment> fragments=new ArrayList<>();
         MyPagerAdapter myPagerAdapter = new MyPagerAdapter(getSupportFragmentManager(),fragments);
-        myPagerAdapter.addFragment(new NewsFragment(),getString(R.string.news));
+        myPagerAdapter.addFragment(NewsFragment.newInstance(NEWS_TYPE_TOP),getString(R.string.news));
         myPagerAdapter.addFragment(new ImageFragment(),getString(R.string.image));
 //        myPagerAdapter.addFragment(new BlankFragment(),getString(R.string.image));
         myPagerAdapter.addFragment(new WeatherFragment(),getString(R.string.weather));

@@ -15,20 +15,23 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.squareup.okhttp.Callback;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
-
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import ustc.var.com.myapplication001.R;
 import ustc.var.com.myapplication001.bean.NewsBean;
 import ustc.var.com.myapplication001.common.Urls;
+import ustc.var.com.myapplication001.news.presenter.NewsPresenter;
+import ustc.var.com.myapplication001.news.presenter.NewsPresenterImpl;
+import ustc.var.com.myapplication001.news.view.NewsView;
 
 
-public class NewsFragment extends Fragment  {
+public class NewsFragment extends Fragment implements NewsView,SwipeRefreshLayout.OnRefreshListener {
+
+    public static final int NEWS_TYPE_TOP = 0;
+    public static final int NEWS_TYPE_NBA = 1;
+    public static final int NEWS_TYPE_CARS = 2;
+    public static final int NEWS_TYPE_JOKES = 3;
 
     private static final String Tag = "NewsFragment";
     public String URL;
@@ -39,51 +42,48 @@ public class NewsFragment extends Fragment  {
     private LinearLayoutManager mLinearLayoutManager;
     private NewsAdapter mAdapter;
     private List<NewsBean> mData;
+    private NewsPresenter mNewsPresenter;
+
+    private int mType = NewsFragment.NEWS_TYPE_TOP;
+    private int pageIndex = 0;
+
 
     private Handler mHandler;
+
+    public static NewsFragment newInstance(int type) {
+        Bundle args = new Bundle();
+        NewsFragment fragment = new NewsFragment();
+        args.putInt("type", type);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mNewsPresenter = new NewsPresenterImpl(this);
+        mType = getArguments().getInt("type");
+    }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view=inflater.inflate(R.layout.fragment_news,null);
-        setOkHttp();
+
         mHandler=new Handler(Looper.getMainLooper());
+
         mSwipeRefreshLayout = view.findViewById(R.id.swipe_refresh_widget_news);
-//        mSwipeRefreshLayout.setOnRefreshListener(this);
-        return view;
-    }
+        mSwipeRefreshLayout.setColorSchemeResources(R.color.primary,
+                R.color.primary_dark, R.color.primary_light,
+                R.color.accent);
+        mSwipeRefreshLayout.setOnRefreshListener(this);
 
-
-    private void setOkHttp() {
-        URL=getUrl(0);
-        OkHttpClient mOkHttpClient=new OkHttpClient();
-        final Request request=new Request.Builder().url(URL).build();
-        mOkHttpClient.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Request request, IOException e) {
-
-            }
-
-            @Override
-            public void onResponse(Response response) throws IOException {
-                String str = response.body().string();
-                mData = NewsJsonUtils.readJsonNewsBeans(str,Urls.TOP_ID);
-                mHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        setRecyclerView();
-                    }
-                });
-            }
-        });
-
-    }
-
-    private void setRecyclerView() {
-        mRecyclerView = getActivity().findViewById(R.id.recycle_view_news);
-        mAdapter=new NewsAdapter(mData,getContext());
+        mRecyclerView = view.findViewById(R.id.recycle_view_news);
+        mAdapter=new NewsAdapter(getContext());
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false));
         mRecyclerView.setAdapter(mAdapter);
+        onRefresh();
+        return view;
     }
 
     private NewsAdapter.OnItemClickListener mOnItemClickListener = new NewsAdapter.OnItemClickListener() {
@@ -105,10 +105,47 @@ public class NewsFragment extends Fragment  {
         }
     };
 
-    private String getUrl(int pageIndex) {
-        StringBuffer sb = new StringBuffer();
-        sb.append(Urls.TOP_URL).append(Urls.TOP_ID);
-        sb.append("/").append(pageIndex).append(Urls.END_URL);
-        return sb.toString();
+    @Override
+    public void showProgress() {
+
+    }
+
+    @Override
+    public void addNews(List<NewsBean> newsList) {
+        mAdapter.isShowFooter(true);
+
+        if(mData == null) {
+            mData = new ArrayList<NewsBean>();
+        }
+        mData.addAll(newsList);
+        if(pageIndex == 0) {
+            mAdapter.setmDate(mData);
+        } else {
+            //如果没有更多数据了,则隐藏footer布局
+            if(newsList == null || newsList.size() == 0) {
+                mAdapter.isShowFooter(false);
+            }
+            mAdapter.notifyDataSetChanged();
+        }
+        pageIndex += Urls.PAZE_SIZE;
+    }
+
+    @Override
+    public void hideProgress() {
+
+    }
+
+    @Override
+    public void showLoadFailMsg() {
+
+    }
+
+    @Override
+    public void onRefresh() {
+        pageIndex = 0;
+        if(mData != null) {
+            mData.clear();
+        }
+        mNewsPresenter.loadNews(mType, pageIndex);
     }
 }
