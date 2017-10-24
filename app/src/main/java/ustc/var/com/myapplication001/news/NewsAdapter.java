@@ -72,7 +72,7 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 return;
             }
             ((ItemViewHolder) holder).mTitle.setText(news.getTitle());
-            ((ItemViewHolder) holder).mDesc.setText(news.getDigest());
+//            ((ItemViewHolder) holder).mDesc.setText(news.getDigest());
 //            Uri uri = Uri.parse(news.getImgsrc());
 //            ((ItemViewHolder) holder).mNewsImg.setImageURI(uri);
             ImageLoaderUtils.display(mContext, ((ItemViewHolder) holder).mNewsImg, news.getImgsrc());
@@ -122,13 +122,13 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         public TextView mTitle;
-        public TextView mDesc;
+//        public TextView mDesc;
         public ImageView mNewsImg;
 
         public ItemViewHolder(View v) {
             super(v);
             mTitle = (TextView) v.findViewById(R.id.tvTitle);
-            mDesc = (TextView) v.findViewById(R.id.tvDesc);
+//            mDesc = (TextView) v.findViewById(R.id.tvDesc);
             mNewsImg = (ImageView) v.findViewById(R.id.ivNews);
             v.setOnClickListener(this);
         }
