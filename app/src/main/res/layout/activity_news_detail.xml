@@ -15,10 +15,8 @@
             android:id="@+id/collapsing_toolbar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:fitsSystemWindows="true"
             app:contentScrim="?attr/colorPrimary"
-            app:expandedTitleMarginEnd="64dp"
-            app:expandedTitleMarginStart="48dp"
+            android:fitsSystemWindows="true"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
             <ImageView
@@ -61,12 +59,22 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"/>
 
+            <TextView
+                android:id="@+id/tvTitle_detail"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="12dp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Title"
+                android:textColor="@color/primary_text"
+                android:textSize="18sp"
+                android:maxLines="3"/>
+
             <org.sufficientlysecure.htmltextview.HtmlTextView
                 android:id="@+id/htNewsContent"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:padding="12dp"
-                android:textAppearance="@android:style/TextAppearance.Medium" />
+                android:textAppearance="@android:style/TextAppearance.Small" />
 
         </LinearLayout>
 

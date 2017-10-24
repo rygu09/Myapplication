@@ -6,6 +6,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import org.sufficientlysecure.htmltextview.HtmlTextView;
 
@@ -26,7 +27,9 @@ import ustc.var.com.myapplication001.util.ToolUtils;
 
 public class NewsDetailActivity extends SwipeBackActivity implements NewsDetailView{
     private NewsBean mNews;
+    private Toolbar toolbar;
     private HtmlTextView mTVNewsContent;
+    private TextView mTextView;
     private ProgressBar mProgressBar;
     private SwipeBackLayout mSwipeBackLayout;
 
@@ -36,9 +39,11 @@ public class NewsDetailActivity extends SwipeBackActivity implements NewsDetailV
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_news_detail);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("");
         mProgressBar = (ProgressBar) findViewById(R.id.progress);
         mTVNewsContent = (HtmlTextView) findViewById(R.id.htNewsContent);
+        mTextView = (TextView) findViewById(R.id.tvTitle_detail);
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -56,7 +61,8 @@ public class NewsDetailActivity extends SwipeBackActivity implements NewsDetailV
         mNews = (NewsBean) getIntent().getSerializableExtra("news");
 
         CollapsingToolbarLayout collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
-        collapsingToolbar.setTitle(mNews.getTitle());
+        collapsingToolbar.setTitleEnabled(false);
+        mTextView.setText(mNews.getTitle());
 
         ImageLoaderUtils.display(getApplicationContext(), (ImageView) findViewById(R.id.ivImage), mNews.getImgsrc());
 
