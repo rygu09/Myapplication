@@ -13,6 +13,9 @@ import me.imid.swipebacklayout.lib.SwipeBackLayout;
 import me.imid.swipebacklayout.lib.app.SwipeBackActivity;
 import ustc.var.com.myapplication001.R;
 import ustc.var.com.myapplication001.bean.NewsBean;
+import ustc.var.com.myapplication001.news.presenter.NewsDetailPresenter;
+import ustc.var.com.myapplication001.news.presenter.NewsDetailPresenterImpl;
+import ustc.var.com.myapplication001.news.view.NewsDetailView;
 import ustc.var.com.myapplication001.util.ImageLoaderUtils;
 import ustc.var.com.myapplication001.util.ToolUtils;
 
@@ -21,11 +24,13 @@ import ustc.var.com.myapplication001.util.ToolUtils;
  * Created by GRY on 2017/10/22.
  */
 
-public class NewsDetailActivity extends SwipeBackActivity {
+public class NewsDetailActivity extends SwipeBackActivity implements NewsDetailView{
     private NewsBean mNews;
     private HtmlTextView mTVNewsContent;
     private ProgressBar mProgressBar;
     private SwipeBackLayout mSwipeBackLayout;
+
+    private NewsDetailPresenter mNewsDetailPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,8 +60,8 @@ public class NewsDetailActivity extends SwipeBackActivity {
 
         ImageLoaderUtils.display(getApplicationContext(), (ImageView) findViewById(R.id.ivImage), mNews.getImgsrc());
 
-//        mNewsDetailPresenter = new NewsDetailPresenterImpl(getApplication(), this);
-//        mNewsDetailPresenter.loadNewsDetail(mNews.getDocid());
+        mNewsDetailPresenter = new NewsDetailPresenterImpl(getApplication(), this);
+        mNewsDetailPresenter.loadNewsDetail(mNews.getDocid());
     }
 
 

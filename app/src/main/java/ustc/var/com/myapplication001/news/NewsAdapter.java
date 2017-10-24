@@ -8,38 +8,29 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-
 import java.util.List;
 
 import ustc.var.com.myapplication001.R;
 import ustc.var.com.myapplication001.bean.NewsBean;
+import ustc.var.com.myapplication001.util.ImageLoaderUtils;
 
-/**
- *
- * Created by GRY on 2017/10/19.
- */
-
-class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
-
+public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final int TYPE_ITEM = 0;
     private static final int TYPE_FOOTER = 1;
 
     private List<NewsBean> mData;
-    private Context mContext;
     private boolean mShowFooter = true;
-
+    private Context mContext;
 
     private OnItemClickListener mOnItemClickListener;
 
-
-    NewsAdapter(Context context) {
-        mContext = context;
+    public NewsAdapter(Context context) {
+        this.mContext = context;
     }
 
     public void setmDate(List<NewsBean> data) {
         this.mData = data;
-//        this.notifyDataSetChanged();
+        this.notifyDataSetChanged();
     }
 
     @Override
@@ -55,18 +46,14 @@ class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
         }
     }
 
-    public class FooterViewHolder extends RecyclerView.ViewHolder {
-
-        public FooterViewHolder(View view) {
-            super(view);
-        }
-
-    }
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent,
+                                                      int viewType) {
         if(viewType == TYPE_ITEM) {
-            View view= LayoutInflater.from(parent.getContext()).inflate(R.layout.item_news,parent,false);
-            return new ItemViewHolder(view);
+            View v = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.item_news, parent, false);
+            ItemViewHolder vh = new ItemViewHolder(v);
+            return vh;
         } else {
             View view = LayoutInflater.from(parent.getContext()).inflate(
                     R.layout.footer, null);
@@ -78,59 +65,80 @@ class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        if(holder instanceof ItemViewHolder){
-            NewsBean newsBean=mData.get(position);
-            ((ItemViewHolder)holder).mTitle.setText(newsBean.getTitle());
-            ((ItemViewHolder)holder).mDesc.setText(newsBean.getDigest());
-            Glide.with(mContext).load(newsBean.getImgsrc()).into(((ItemViewHolder)holder).mNewsImg);
-            }
-    }
+        if(holder instanceof ItemViewHolder) {
 
+            NewsBean news = mData.get(position);
+            if(news == null) {
+                return;
+            }
+            ((ItemViewHolder) holder).mTitle.setText(news.getTitle());
+            ((ItemViewHolder) holder).mDesc.setText(news.getDigest());
+//            Uri uri = Uri.parse(news.getImgsrc());
+//            ((ItemViewHolder) holder).mNewsImg.setImageURI(uri);
+            ImageLoaderUtils.display(mContext, ((ItemViewHolder) holder).mNewsImg, news.getImgsrc());
+        }
+    }
 
     @Override
     public int getItemCount() {
         int begin = mShowFooter?1:0;
-
         if(mData == null) {
             return begin;
         }
-        return mData.size();
+        return mData.size() + begin;
     }
 
+    //给点击item事件提供个Item的位置
     public NewsBean getItem(int position) {
         return mData == null ? null : mData.get(position);
     }
 
+    //通过该方法设置boolean mShowFooter的值
     public void isShowFooter(boolean showFooter) {
         this.mShowFooter = showFooter;
     }
 
+    //返回boolean mShowFooter的值
     public boolean isShowFooter() {
         return this.mShowFooter;
+    }
+
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+        this.mOnItemClickListener = onItemClickListener;
+    }
+
+    public class FooterViewHolder extends RecyclerView.ViewHolder {
+
+        public FooterViewHolder(View view) {
+            super(view);
+        }
+
     }
 
     public interface OnItemClickListener {
         public void onItemClick(View view, int position);
     }
 
-    class ItemViewHolder extends RecyclerView.ViewHolder {
-        TextView mTitle;
-        TextView mDesc;
-        ImageView mNewsImg;
+    public class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        ItemViewHolder(View itemView) {
-            super(itemView);
-            mTitle = itemView.findViewById(R.id.tvTitle);
-            mDesc = itemView.findViewById(R.id.tvDesc);
-            mNewsImg =  itemView.findViewById(R.id.ivNews);
-//            itemView.setOnClickListener(this);
+        public TextView mTitle;
+        public TextView mDesc;
+        public ImageView mNewsImg;
+
+        public ItemViewHolder(View v) {
+            super(v);
+            mTitle = (TextView) v.findViewById(R.id.tvTitle);
+            mDesc = (TextView) v.findViewById(R.id.tvDesc);
+            mNewsImg = (ImageView) v.findViewById(R.id.ivNews);
+            v.setOnClickListener(this);
         }
 
-//        @Override
-//        public void onClick(View v) {
-//            if(mOnItemClickListener != null) {
-//                mOnItemClickListener.onItemClick(v, this.getPosition());
-//            }
-//        }
+        @Override
+        public void onClick(View view) {
+            if(mOnItemClickListener != null) {
+                mOnItemClickListener.onItemClick(view, this.getPosition());
+            }
+        }
     }
+
 }

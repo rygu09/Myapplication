@@ -2,8 +2,6 @@ package ustc.var.com.myapplication001.news;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
@@ -24,6 +22,7 @@ import ustc.var.com.myapplication001.common.Urls;
 import ustc.var.com.myapplication001.news.presenter.NewsPresenter;
 import ustc.var.com.myapplication001.news.presenter.NewsPresenterImpl;
 import ustc.var.com.myapplication001.news.view.NewsView;
+import ustc.var.com.myapplication001.util.LogUtils;
 
 
 public class NewsFragment extends Fragment implements NewsView,SwipeRefreshLayout.OnRefreshListener {
@@ -33,22 +32,19 @@ public class NewsFragment extends Fragment implements NewsView,SwipeRefreshLayou
     public static final int NEWS_TYPE_CARS = 2;
     public static final int NEWS_TYPE_JOKES = 3;
 
-    private static final String Tag = "NewsFragment";
-    public String URL;
+    private static final String TAG = "NewsFragment";
 
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
     private RecyclerView mRecyclerView;
-    private LinearLayoutManager mLinearLayoutManager;
+    private LinearLayoutManager mLayoutManager;
     private NewsAdapter mAdapter;
     private List<NewsBean> mData;
+
     private NewsPresenter mNewsPresenter;
 
     private int mType = NewsFragment.NEWS_TYPE_TOP;
     private int pageIndex = 0;
-
-
-    private Handler mHandler;
 
     public static NewsFragment newInstance(int type) {
         Bundle args = new Bundle();
@@ -70,8 +66,6 @@ public class NewsFragment extends Fragment implements NewsView,SwipeRefreshLayou
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view=inflater.inflate(R.layout.fragment_news,null);
 
-        mHandler=new Handler(Looper.getMainLooper());
-
         mSwipeRefreshLayout = view.findViewById(R.id.swipe_refresh_widget_news);
         mSwipeRefreshLayout.setColorSchemeResources(R.color.primary,
                 R.color.primary_dark, R.color.primary_light,
@@ -79,12 +73,43 @@ public class NewsFragment extends Fragment implements NewsView,SwipeRefreshLayou
         mSwipeRefreshLayout.setOnRefreshListener(this);
 
         mRecyclerView = view.findViewById(R.id.recycle_view_news);
+        mRecyclerView.setHasFixedSize(true);
+
         mAdapter=new NewsAdapter(getContext());
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false));
+        mAdapter.setOnItemClickListener(mOnItemClickListener);
+
+        mLayoutManager = new LinearLayoutManager(getActivity());
+
+        mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.addOnScrollListener(mOnScrollListener);
+
         onRefresh();
         return view;
     }
+
+    private RecyclerView.OnScrollListener mOnScrollListener = new RecyclerView.OnScrollListener() {
+
+        private int lastVisibleItem;
+
+        @Override
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            super.onScrolled(recyclerView, dx, dy);
+            lastVisibleItem = mLayoutManager.findLastVisibleItemPosition();
+        }
+
+        @Override
+        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+            super.onScrollStateChanged(recyclerView, newState);
+            if (newState == RecyclerView.SCROLL_STATE_IDLE
+                    && lastVisibleItem + 1 == mAdapter.getItemCount()
+                    && mAdapter.isShowFooter()) {
+                //加载更多
+                LogUtils.d(TAG, "loading more data");
+                mNewsPresenter.loadNews(mType, pageIndex + Urls.PAZE_SIZE);
+            }
+        }
+    };
 
     private NewsAdapter.OnItemClickListener mOnItemClickListener = new NewsAdapter.OnItemClickListener() {
         @Override
@@ -97,6 +122,8 @@ public class NewsFragment extends Fragment implements NewsView,SwipeRefreshLayou
             intent.putExtra("news", news);
 
             View transitionView = view.findViewById(R.id.ivNews);
+
+            //Activity 转场动画用
             ActivityOptionsCompat options =
                     ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(),
                             transitionView, getString(R.string.transition_news_img));
@@ -107,7 +134,12 @@ public class NewsFragment extends Fragment implements NewsView,SwipeRefreshLayou
 
     @Override
     public void showProgress() {
+        mSwipeRefreshLayout.setRefreshing(true);
+    }
 
+    @Override
+    public void hideProgress() {
+        mSwipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
@@ -128,11 +160,6 @@ public class NewsFragment extends Fragment implements NewsView,SwipeRefreshLayou
             mAdapter.notifyDataSetChanged();
         }
         pageIndex += Urls.PAZE_SIZE;
-    }
-
-    @Override
-    public void hideProgress() {
-
     }
 
     @Override
