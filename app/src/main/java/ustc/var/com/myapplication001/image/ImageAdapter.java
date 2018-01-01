@@ -28,16 +28,18 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ItemViewHold
     private Context mContext;
     private int mMaxWidth;
 
+    private OnItemClickListener mOnItemClickListener;
+
     public ImageAdapter(List<ImageBean> data, Context context) {
         this.mData = data;
         this.mContext = context;
         mMaxWidth = ToolUtils.getWidthInPx(mContext) /2 -10;
     }
 
-    //    public void setmDate(List<ImageBean> data) {
-//        this.mData = data;
-//        this.notifyDataSetChanged();
-//    }
+        public void setmDate(List<ImageBean> data) {
+        this.mData = data;
+        this.notifyDataSetChanged();
+    }
 
     @Override
     public ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -64,13 +66,35 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ItemViewHold
         return mData.size();
     }
 
-    public class ItemViewHolder extends RecyclerView.ViewHolder {
+    public ImageBean getItem(int position) {
+        return mData == null ? null : mData.get(position);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+        this.mOnItemClickListener = onItemClickListener;
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(View view, int position);
+    }
+
+    public class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+
         public TextView mTitle;
         public ImageView mImage;
+
         public ItemViewHolder(View itemView) {
             super(itemView);
             mTitle=itemView.findViewById(R.id.tvTitle);
             mImage = itemView.findViewById(R.id.ivImage);
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            if(mOnItemClickListener != null) {
+                mOnItemClickListener.onItemClick(v, this.getPosition());
+            }
         }
     }
 }
